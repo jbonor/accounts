@@ -58,12 +58,10 @@ class PluginAccountsConfig extends CommonDBTM
     * @return bool
     */
    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-      global $CFG_GLPI;
 
       if ($item->getType() == 'CronTask') {
 
-         $target = $CFG_GLPI["root_doc"] .PLUGIN_ACCOUNTS_DIR_NOFULL . "/front/notification.state.php";
-         PluginAccountsAccount::configCron($target);
+         PluginAccountsAccount::configCron(1);
       }
       return true;
    }
@@ -72,12 +70,13 @@ class PluginAccountsConfig extends CommonDBTM
     * @param $target
     * @param $ID
     */
-   public function showForm($target, $ID) {
+   public function showConfigForm($target, $ID) {
 
       $this->getFromDB($ID);
       $delay_expired = $this->fields["delay_expired"];
       $delay_whichexpire = $this->fields["delay_whichexpire"];
       echo "<div align='center'>";
+      $target = $CFG_GLPI["root_doc"] .PLUGIN_ACCOUNTS_DIR_NOFULL . "/front/notification.state.php";
       echo "<form method='post' action=\"$target\">";
       echo "<table class='tab_cadre_fixe' cellpadding='5'><tr><th>";
       echo __('Time of checking of of expiration of accounts', 'accounts') . "</th></tr>";
@@ -90,10 +89,14 @@ class PluginAccountsConfig extends CommonDBTM
 
       echo "<tr class='tab_bg_1'><td><div align='left'>";
       echo __('Accounts expired for more than', 'accounts');
-      echo "&nbsp;<input type='text' size='5' name='delay_expired' value=\"$delay_expired\">&nbsp;";
+      echo "&nbsp;";
+      echo Html::input('delay_expired', ['value' => $delay_expired, 'size' => 5]);
+      echo "&nbsp;";
       echo _n('Day', 'Days', 2) . " ( >" . Html::convDate($date_first) . ")<br>";
       echo __('Accounts expiring in less than', 'accounts');
-      echo "&nbsp;<input type='text' size='5' name='delay_whichexpire' value=\"$delay_whichexpire\">&nbsp;";
+      echo "&nbsp;";
+      echo Html::input('delay_whichexpire', ['value' => $delay_whichexpire, 'size' => 5]);
+      echo "&nbsp;";
       echo _n('Day', 'Days', 2) . " ( <" . Html::convDate($date_next) . ")";
 
       echo "</td>";
@@ -102,7 +105,7 @@ class PluginAccountsConfig extends CommonDBTM
       echo "<tr><th>";
       echo Html::hidden('id', ['value' => $ID]);
       echo "<div align='center'>";
-      echo "<input type='submit' name='update' value=\"" . _sx('button', 'Save') . "\" class='submit' >";
+      echo Html::submit(_sx('button', 'Save'), ['name' => 'xxx', 'update' => 'btn btn-primary']);
       echo "</div></th></tr>";
       echo "</table>";
       Html::closeForm();

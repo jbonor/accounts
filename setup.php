@@ -54,7 +54,7 @@ function plugin_init_accounts() {
                              'ticket_types'                => true,
                              'helpdesk_visible_types'      => true,
                              'notificationtemplates_types' => true,
-                             'header_types'                => true,
+//                             'header_types'                => true,
                             ]
       );
 
@@ -81,6 +81,12 @@ function plugin_init_accounts() {
       ) {
          $PLUGIN_HOOKS['helpdesk_menu_entry']['accounts'] = '/front/account.php';
       }
+
+       if ($plugin->isActivated('fields')
+           && Session::haveRight("plugin_accounts", READ)
+       ) {
+           $PLUGIN_HOOKS['plugin_fields']['accounts'] = 'PluginAccountsAccount';
+       }
 
       if (Session::haveRight("plugin_accounts", UPDATE)) {
          $PLUGIN_HOOKS['use_massive_action']['accounts'] = 1;
@@ -127,7 +133,7 @@ function plugin_version_accounts() {
       'homepage'     => 'https://github.com/InfotelGLPI/accounts',
       'requirements' => [
          'glpi' => [
-            'min' => '9.5',
+            'min' => '10.0',
             'dev' => false
          ]
       ],
@@ -140,10 +146,10 @@ function plugin_version_accounts() {
  * @return bool
  */
 function plugin_accounts_check_prerequisites() {
-   if (version_compare(GLPI_VERSION, '9.5', 'lt')
-       || version_compare(GLPI_VERSION, '9.6', 'ge')) {
+   if (version_compare(GLPI_VERSION, '10.0', 'lt')
+       || version_compare(GLPI_VERSION, '11.0', 'ge')) {
       if (method_exists('Plugin', 'messageIncompatible')) {
-         echo Plugin::messageIncompatible('core', '9.5');
+         echo Plugin::messageIncompatible('core', '10.0');
       }
       return false;
    }
